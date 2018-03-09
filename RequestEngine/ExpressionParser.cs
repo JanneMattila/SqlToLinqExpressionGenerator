@@ -89,6 +89,7 @@ namespace RequestEngine
         {
             switch (strToken)
             {
+                case "~":
                 case ".":
                 case ",":
                 case "+":
@@ -106,6 +107,7 @@ namespace RequestEngine
             }
             switch (nextChar)
             {
+                case '~':
                 case '.':
                 case ',':
                 case '+':

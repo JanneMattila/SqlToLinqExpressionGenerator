@@ -25,7 +25,8 @@ namespace RequestEngine
         Add,
         Substruct,
         Mult,
-        Div
+        Div,
+        Like
     }
 
     enum RecommendedInputTypes
@@ -66,6 +67,7 @@ namespace RequestEngine
                 case "-": return new OperatorToken(OperatorType.Substruct);
                 case "*": return new OperatorToken(OperatorType.Mult);
                 case "/": return new OperatorToken(OperatorType.Div);
+                case "~": return new OperatorToken(OperatorType.Like);
                 default: return null;
             }
         }
@@ -155,6 +157,7 @@ namespace RequestEngine
                     case OperatorType.LessEqual: return RecommendedInputTypes.Comparable;
                     case OperatorType.Equal:
                     case OperatorType.NotEqual: return RecommendedInputTypes.Any;
+                    case OperatorType.Like: return RecommendedInputTypes.Any;
                     default: return RecommendedInputTypes.Any;
                 }
             }
@@ -182,6 +185,11 @@ namespace RequestEngine
                 case OperatorType.Substruct: return Expression.Subtract(argLeft, argRight);
                 case OperatorType.Mult: return Expression.Multiply(argLeft, argRight);
                 case OperatorType.Div: return Expression.Divide(argLeft, argRight);
+                case OperatorType.Like:
+                    var method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                    var constantExpression = argRight as ConstantExpression;
+                    var containsFilterExpression = Expression.Constant(constantExpression.Value, typeof(string));
+                    return Expression.Call(argLeft, method, containsFilterExpression);
 
                 default: throw new NotImplementedException(operatorType.ToString() + " operation is not implemented");
             }

@@ -129,6 +129,10 @@ namespace RequestEngineTest
             Func<Order, string> ordStrConv = ExpressionBuilder.BuildFunctor<Order, string>("Detail.Color.ToString()");
             List<string> privelegeSuppliers = new List<string>(orders.Where(londonFilter).Select(ordStrConv).Distinct());
 
+            //Like based filter
+            Func<Order, bool> londonFilter2 = ExpressionBuilder.BuildFunctor<Order, bool>("Project.City~\"Ro\"");
+            List<string> privelegeSuppliers2 = new List<string>(orders.Where(londonFilter2).Select(s => s.Project.City).Distinct());
+
             //Performs Join of Details and Suppliers by City
             Func<Supplier, string> suppKey = ExpressionBuilder.BuildFunctor<Supplier, string>("City");
             Func<Detail, string> detailKey = ExpressionBuilder.BuildFunctor<Detail, string>("City");
